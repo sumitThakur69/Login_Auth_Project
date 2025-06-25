@@ -1,7 +1,8 @@
 import express from 'express';
 import cors from 'cors';
-import { createServer } from 'http';
 import cookieParser from 'cookie-parser';
+import { AppError } from './utils/appError.js';
+import errorMiddleware from './middleware/errorMiddleware.js';
 
 const app = express();
 
@@ -11,6 +12,14 @@ app.use(cors({
   credentials: true,
 }));
 app.use(express.json({limit: '10kb'}));
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 
-module.exports = app 
+// app.all("/*", (req, res, next) => {
+//   next(new AppError(404, `Can't find ${req.originalUrl} on this server!`))
+// });
+
+app.use(errorMiddleware)
+
+
+export default app;
 
